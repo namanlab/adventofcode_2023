@@ -1,0 +1,117 @@
+import java.util.*;
+
+public class d13 {
+
+    public static String getStringRepresentation(ArrayList<Character> list){
+        StringBuilder builder = new StringBuilder(list.size());
+        for(Character ch: list){
+            builder.append(ch);
+        }
+        return builder.toString();
+    }
+
+    public static int getPat(ArrayList<ArrayList<Character>> arr){
+        int res = -1;
+        String matchStr, curStr;
+        // First from top,
+        matchStr = getStringRepresentation(arr.getFirst());
+        for (int i = arr.size() - 1; i > 0; i--){
+            curStr = getStringRepresentation(arr.get(i));
+            if (i % 2 == 0){
+                continue;
+            }
+            if (matchStr.equals(curStr)){
+                if (i == 1){
+                    res =  1;
+                    return res;
+                }
+                boolean potent = true;
+                for(int j = 1; j <= (i - 1) / 2; j++){
+                    if (!getStringRepresentation(arr.get(j)).equals(getStringRepresentation(arr.get(i - j)))){
+                        potent = false;
+                        break;
+                    }
+                }
+                if (potent){
+                    res = (i + 1) / 2;
+                    return res;
+                }
+            }
+        }
+        
+        // Then from bottom,
+        matchStr = getStringRepresentation(arr.getLast());
+        for (int i = 0; i < arr.size() - 1; i++){
+            curStr = getStringRepresentation(arr.get(i));
+            if (i % 2 == 0){
+                continue;
+            }
+            if (matchStr.equals(curStr)){
+                boolean potent = true;
+                int counterim = 0;
+                if (i == arr.size() - 2){
+                    res =  arr.size() - 1;
+                    return res;
+                }
+                for(int j = arr.size() - 2; j >= (i + arr.size()) / 2; j--){
+                    counterim++;
+                    if (!getStringRepresentation(arr.get(j)).equals(getStringRepresentation(arr.get(i + counterim)))){
+                        potent = false;
+                        break;
+                    }
+                }
+                if (potent){
+                    res = (i + arr.size()) / 2;
+                    return res;
+                }
+            }
+        }
+        return res;
+    }
+
+    public static ArrayList<ArrayList<Character>>  transpose(ArrayList<ArrayList<Character>> arr){
+        ArrayList<ArrayList<Character>> res = new ArrayList<ArrayList<Character>> ();
+        for (int i = 0; i < arr.get(0).size(); i++){
+            ArrayList<Character> temp = new ArrayList<Character>();
+            res.add(temp);
+        }
+        for (int i = 0; i < arr.size(); i++){
+            for (int j = 0; j < arr.get(0).size(); j++){
+                res.get(j).add(arr.get(i).get(j));
+            }
+        }
+        return res;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        ArrayList<ArrayList<ArrayList<Character>>> pats = new ArrayList<ArrayList<ArrayList<Character>>>();
+        while (sc.hasNextLine()) {
+            String curLine = sc.nextLine();
+            ArrayList<ArrayList<Character>> temp = new ArrayList<ArrayList<Character>>();
+            while (!curLine.equals("")){
+                char[] curSt = curLine.toCharArray();
+                ArrayList<Character> subTemp = new ArrayList<Character>();
+                for (char c: curSt){subTemp.add(c);}
+                temp.add(subTemp);
+                if (!sc.hasNextLine()){break;}
+                curLine = sc.nextLine();
+            }
+            pats.add(temp);
+        }
+        long res = 0;
+        for (int i = 0; i < pats.size(); i++){
+            int curVal = getPat(pats.get(i));
+            // Row
+            if (curVal != -1){res += 100*curVal;}
+            else {
+                curVal = getPat(transpose(pats.get(i)));
+                res += curVal;
+            }
+            System.out.println(curVal);
+        }
+        System.out.println(res);
+        sc.close();
+    }
+
+}
