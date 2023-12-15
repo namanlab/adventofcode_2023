@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class d14 {
+public class d14p2 {
 
     public static ArrayList<ArrayList<Character>> moveNorth(ArrayList<ArrayList<Character>> arr){
         ArrayList<ArrayList<Character>> cur = transpose(arr);
