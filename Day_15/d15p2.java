@@ -1,68 +1,69 @@
 import java.util.*;
 
-public class d14p2 {
-
-    public static ArrayList<ArrayList<Character>> moveNorth(ArrayList<ArrayList<Character>> arr){
-        ArrayList<ArrayList<Character>> cur = transpose(arr);
-        for (int i = 0; i < arr.size(); i++){
-            for (int j = 0; j < cur.get(i).size(); j++){
-                if (cur.get(i).get(j).equals('O')){
-                    if (j == 0){continue;}
-                    int counterim = 1;
-                    while (cur.get(i).get(j - counterim).equals('.')){
-                        cur.get(i).set(j - counterim + 1, '.');
-                        cur.get(i).set(j - counterim, 'O');
-                        counterim++;
-                        if (j - counterim < 0){break;}
-                    }
-                }
-            }
-        }
-        ArrayList<ArrayList<Character>> res = transpose(cur);
-        return res;
-    }
-
-    public static ArrayList<ArrayList<Character>>  transpose(ArrayList<ArrayList<Character>> arr){
-        ArrayList<ArrayList<Character>> res = new ArrayList<ArrayList<Character>> ();
-        for (int i = 0; i < arr.get(0).size(); i++){
-            ArrayList<Character> temp = new ArrayList<Character>();
-            res.add(temp);
-        }
-        for (int i = 0; i < arr.size(); i++){
-            for (int j = 0; j < arr.get(0).size(); j++){
-                res.get(j).add(arr.get(i).get(j));
-            }
+public class d15p2 {
+    public static int getCode(String s){
+        int res = 0;
+        for (char c: s.toCharArray()){
+            res += (int) c;
+            res *= 17;
+            res = res % 256;
         }
         return res;
     }
-
-    public static long  getLoad(ArrayList<ArrayList<Character>> arr){
-        long res = 0;
-        for (int i = 0; i < arr.size(); i++){
-            int mult = (arr.size() - i);
-            int temp = 0;
-            for (char c: arr.get(i)){
-                if (c == 'O'){
-                    temp++;
-                }
-            }
-            res += mult*temp;
-        }
-        return res;
-    }
-
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        ArrayList<ArrayList<Character>> pats = new ArrayList<ArrayList<Character>>();
-        while (sc.hasNextLine()) {
-            String curLine = sc.nextLine();
-            char[] curSt = curLine.toCharArray();
-            ArrayList<Character> temp = new ArrayList<Character>();
-            for (char c: curSt){temp.add(c);}
-            pats.add(temp);
+        String curLine = sc.nextLine();
+        String[] strArr = curLine.split(",");
+        ArrayList<ArrayList<String[]>> arr = new ArrayList<ArrayList<String[]>>();
+        ArrayList<HashMap<String, String>> arrHM = new ArrayList<HashMap<String, String>>();
+        for (int i = 0; i < 256; i++){
+            ArrayList<String[]> subTemp1 = new ArrayList<String[]>();
+            HashMap<String, String> subTemp2 = new HashMap<String, String>();
+            arr.add(subTemp1);
+            arrHM.add(subTemp2);
         }
-        ArrayList<ArrayList<Character>> npats = moveNorth(pats);
-        long res = getLoad(npats);
+        int curCode;
+        for (String i: strArr){
+            if (i.endsWith("-")){
+                String substr = i.substring(0, i.length() - 1);
+                curCode = getCode(substr);
+                System.out.println(i.substring(0, i.length() - 1));
+                if (!arrHM.get(curCode).containsKey(substr)){
+                    continue;
+                } else {
+                    for (int j = 0; j < arr.get(curCode).size(); j++){
+                        if (arr.get(curCode).get(j)[0].equals(substr)){
+                            arr.get(curCode).remove(j);
+                        }
+                    }
+                    arrHM.get(curCode).remove(substr);
+                }
+            } else {
+                String[] strSubArr = i.split("=");
+                curCode = getCode(strSubArr[0]);
+                if (arrHM.get(curCode).containsKey(strSubArr[0])){
+                    for (int j = 0; j < arr.get(curCode).size(); j++){
+                        if (arr.get(curCode).get(j)[0].equals(strSubArr[0])){
+                            arr.get(curCode).get(j)[1] = strSubArr[1];                        }
+                    }
+                } else {
+                    String[] newVal = new String[2];
+                    newVal[0] = strSubArr[0];
+                    newVal[1] = strSubArr[1];
+                    arr.get(curCode).addLast(newVal);
+                    arrHM.get(curCode).put(strSubArr[0], strSubArr[1]);
+                }
+            }
+            
+        }
+        long res = 0;
+        for (int i = 0; i < arr.size(); i++){
+            for (int j = 0; j < arr.get(i).size(); j++){
+                int temp = (i + 1) * (j + 1) * Integer.valueOf(arr.get(i).get(j)[1]);
+                res += temp;
+            }
+            
+        }
         System.out.println(res);
         sc.close();
     }
