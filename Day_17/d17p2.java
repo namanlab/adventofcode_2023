@@ -181,7 +181,6 @@ class Cruc{
         // [2, 0, 0, 2], [0, 0, 2]
         Map.Entry<HeatDir, Agent> curEn = this.ts.pollFirstEntry();
         Agent curAg = curEn.getValue();
-        System.out.println(curEn.getKey());
         boolean[] possible = getPossibleMoves(curAg, maxr - 1, maxc - 1);
         visited.add(curAg);
         int curSteps;
