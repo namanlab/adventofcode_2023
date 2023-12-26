@@ -1,5 +1,9 @@
 # Advent of Code 2023 Solutions
 
+<!-- AOC TILES BEGIN --> 
+
+<!-- AOC TILES END -->
+
 ## Introduction
 
 Welcome to my repository containing solutions to the Advent of Code 2023 challenges. Advent of Code is an annual event featuring daily programming puzzles during the month of December.
